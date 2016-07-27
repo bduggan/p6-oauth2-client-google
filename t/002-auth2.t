@@ -25,7 +25,16 @@ my $o = OAuth2::Client::Google.new(
 );
 ok $o, 'made an object';
 
-is $o.auth-uri, 'https://accounts.google.com/o/oauth2/auth?access_type=&client_id=some-client-id&include_granted_scopes=true&login_hint=&prompt=consent&redirect_uri=http://example.com/here&response_type=code&scope=https://www.googleapis.com/auth/calendar.readonly&state=', 'got auth-uri';
+is $o.auth-uri, <
+    https://accounts.google.com/o/oauth2/auth?access_type=
+    client_id=some-client-id
+    include_granted_scopes=true
+    login_hint=
+    prompt=consent
+    redirect_uri=http://example.com/here
+    response_type=code
+    scope=https://www.googleapis.com/auth/calendar.readonly
+state=>.join('&'), 'got auth-uri';
 
 ok $o.code-to-token(:code("1234")), 'called code-to-token';
 
