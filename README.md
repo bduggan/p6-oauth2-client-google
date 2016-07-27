@@ -35,10 +35,10 @@ the "code" parameter from the query string.  Use it to
 call
 
 ```
-my $access = $oauth.code-to-token(code => $code)
+my $token = $oauth.code-to-token(code => $code)
 ```
 
-This will give you $access<access_token>, which you can
+This will give you `$token<access_token>`, which you can
 then use with google APIs.
 
 
