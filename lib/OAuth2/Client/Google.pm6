@@ -12,8 +12,8 @@ has $.prompt = 'consent'; #| or none or select_account or "consent select_accoun
 has $.include-granted-scopes = 'true';
 has $.scope = "https://www.googleapis.com/auth/calendar.readonly";
 has $.state = "";
-has $.login-hint;
-has $.access-type; # online offline
+has $.login-hint = "";
+has $.access-type = ""; # online offline
 
 method !client-id { $.config<web><client_id> }
 method !client-secret { $.config<web><client_secret> }
@@ -56,9 +56,7 @@ method auth-uri {
     my $web-config = $.config<web>;
     die "missing client_id" unless $web-config<client_id>;
     return $web-config<auth_uri> ~ '?' ~
-     (
-
-         response_type          => $.response-type,
+     ( response_type          => $.response-type,
         client_id              => self!client-id,
         redirect_uri           => $.redirect-uri,
         scope                  => $.scope,
@@ -67,7 +65,7 @@ method auth-uri {
         prompt                 => $.prompt,
         login_hint             => $.login-hint,
         include_granted_scopes => $.include-granted-scopes,
-     ).map({ "{.key}={.value}" }).join('&');
+     ).sort.map({ "{.key}={.value}" }).join('&');
 }
 
 #| Send a request to <https://www.googleapis.com/oauth2/v4/token>.
