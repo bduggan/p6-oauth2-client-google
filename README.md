@@ -44,7 +44,7 @@ my $token = $oauth.code-to-token(code => $code)
 This will give you `$token<access_token>`, which you can
 then use with google APIs.
 
-For a working examples, see eg/get-calendar-data.p6.
+For a working example, see [eg/get-calendar-data.p6](eg/get-calendar-data.p6).
 
 TODO
 ----
