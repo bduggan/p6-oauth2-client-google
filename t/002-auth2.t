@@ -21,7 +21,8 @@ my $sample-config =
 
 my $o = OAuth2::Client::Google.new(
     config => $sample-config,
-    redirect-uri => 'http://example.com/here'
+    redirect-uri => 'http://example.com/here',
+    scope => 'email',
 );
 ok $o, 'made an object';
 
@@ -33,7 +34,7 @@ is $o.auth-uri, <
     prompt=consent
     redirect_uri=http://example.com/here
     response_type=code
-    scope=https://www.googleapis.com/auth/calendar.readonly
+    scope=email
 state=>.join('&'), 'got auth-uri';
 
 ok $o.code-to-token(:code("1234")), 'called code-to-token';
