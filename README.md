@@ -45,3 +45,7 @@ then use with google APIs.
 
 For a working examples, see eg/get-calendar-data.p6.
 
+TODO
+----
+- Better documentation
+- Refresh tokens
