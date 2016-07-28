@@ -1,9 +1,10 @@
 {
     "name" : "OAuth2::Client::Google",
     "author" : "github:bduggan",
-    "version" : "0.0.1",
-    "description" : "Authenticate against google's OAuth2 API.",
+    "version" : "0.1.0",
+    "description" : "Authenticate against Google's OAuth2 API.",
     "depends" : [ "IO::Socket::SSL", "JSON::Fast" ],
+    "resources" : [],
     "provides" : {
         "OAuth2::Client::Google" : "lib/OAuth2/Client/Google.pm"
     },
