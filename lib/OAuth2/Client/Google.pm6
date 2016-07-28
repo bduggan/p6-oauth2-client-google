@@ -80,6 +80,10 @@ method auth-uri {
 #| expires_in 	 The remaining lifetime of the access token.
 #| token_type 	 Identifies the type of token returned.
 #|                 At this time, this field will always have the value Bearer.
+#| or
+#|    error
+#|    error_description
+#|
 method code-to-token(:$code!) {
     my %payload =
         code => $code,
@@ -90,7 +94,11 @@ method code-to-token(:$code!) {
     my $req = self!generate-access-token-request(%payload);
     my $ssl = IO::Socket::SSL.new(:host<www.googleapis.com>, :port<443>);
     $ssl.print($req) or return;
-    my $res = $ssl.recv;
-    return self!parse-response($res,$ssl.encoding);
+    my $content;
+    while (my $read = $ssl.recv) {
+        $content ~= $read;
+        last if $read ~~ /\r\n0\r\n\r\n$/;
+    }
+    return self!parse-response($content,$ssl.encoding);
 }
 
