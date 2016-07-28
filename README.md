@@ -44,6 +44,14 @@ my $token = $oauth.code-to-token(code => $code)
 This will give you `$token<access_token>`, which you can
 then use with google APIs.
 
+If you also included "email" in the scope, you will get id-token,
+which you can use like this:
+
+```
+my $identity = $oauth.verify-id(id-token => $token<id_token>)
+```
+which has, e.g. `$identity<email>` and `$identity<given_name>`.
+
 For a working example, see [eg/get-calendar-data.p6](eg/get-calendar-data.p6).
 
 TODO

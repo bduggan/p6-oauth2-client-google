@@ -24,7 +24,7 @@ say "using $uri from config file";
 my $oauth = OAuth2::Client::Google.new(
     config => $config,
     redirect-uri => $uri,
-    scope => "https://www.googleapis.com/auth/calendar.readonly",
+    scope => "https://www.googleapis.com/auth/calendar.readonly email",
 );
 my $auth-uri = $oauth.auth-uri;
 
@@ -63,7 +63,11 @@ my $access = $oauth.code-to-token(:$code);
 my $token = $access<access_token> or die "could not get access token : { $access.gist } ";
 say "Got access token $token";
 
-# Use it!
+# Get identity.
+my $identity = $oauth.verify-id(id-token => $access<id_token>);
+say $identity.gist;
+
+# Get calendar data.
 my $base = "https://www.googleapis.com/calendar/v3";
 my $ua = HTTP::UserAgent.new;
 my $got = $ua.get(
