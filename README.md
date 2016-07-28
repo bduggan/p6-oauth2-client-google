@@ -24,7 +24,8 @@ Quick How-to
  );
 ```
 where redirect-uri is one of your redirect URIs and
-scope is the scope of access you want.
+scope is a space or comma-separated list of scopes
+from <https://developers.google.com/identity/protocols/googlescopes>.
 
 To authenticate, redirect the user to
 
