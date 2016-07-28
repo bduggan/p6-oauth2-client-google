@@ -19,10 +19,12 @@ Quick How-to
 ```
  my $oauth = OAuth2::Client::Google.new(
     config => from-json('./client_id.json'.IO.slurp),
-    redirect-uri => 'http://localhost:3334/oauth'
+    redirect-uri => 'http://localhost:3334/oauth',
+    scope => 'email'
  );
 ```
-where redirect-uri is one of your redirect URIs.
+where redirect-uri is one of your redirect URIs and
+scope is the scope of access you want.
 
 To authenticate, redirect the user to
 
@@ -41,4 +43,5 @@ my $token = $oauth.code-to-token(code => $code)
 This will give you `$token<access_token>`, which you can
 then use with google APIs.
 
+For a working examples, see eg/get-calendar-data.p6.
 

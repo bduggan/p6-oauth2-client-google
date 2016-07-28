@@ -10,7 +10,7 @@ has $.redirect-uri is required;
 has $.response-type = 'code';
 has $.prompt = 'consent'; #| or none or select_account or "consent select_account";
 has $.include-granted-scopes = 'true';
-has $.scope = "https://www.googleapis.com/auth/calendar.readonly";
+has $.scope is required;
 has $.state = "";
 has $.login-hint = "";
 has $.access-type = ""; # online offline
