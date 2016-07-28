@@ -1,5 +1,5 @@
 unit class OAuth2::Client::Google;
-use IO::Socket::SSL;
+use HTTP::UserAgent;
 use JSON::Fast;
 
 # Reference:
@@ -17,40 +17,6 @@ has $.access-type = ""; # online offline
 
 method !client-id { $.config<web><client_id> }
 method !client-secret { $.config<web><client_secret> }
-method !parse-response($str,$encoding) {
-    my ($head, $body) = split rx{\r\n\r\n}, $str, 2;
-    my $content;
-    if $head ~~ /'Transfer-Encoding: chunked'/ {
-        my @lines = split rx{\r\n}, $body;
-        loop {
-            my $len = :16(shift @lines) or last;
-            my $chunk = shift @lines;
-            while $chunk.encode($encoding).bytes < $len {
-                $chunk ~= "\r\n";
-                $chunk ~= shift @lines;
-            }
-            $content ~= $chunk;
-            last unless @lines;
-        }
-    } else {
-        $content = $body;
-    }
-    return from-json($content);
-}
-
-method !generate-access-token-request(%values) {
-    my $body = %values.map({ "{.key}={.value}" }).join('&');
-    my $length = $body.encode('UTF-8').bytes;
-    my $req = qq:to/HTTP_REQUEST/;
-       POST /oauth2/v4/token HTTP/1.1
-       Host: www.googleapis.com
-       Content-Type: application/x-www-form-urlencoded
-       Content-Length: $length
-
-       $body
-       HTTP_REQUEST
-    return $req;
-}
 
 method auth-uri {
     my $web-config = $.config<web>;
@@ -91,14 +57,9 @@ method code-to-token(:$code!) {
         client_secret => self!client-secret,
         redirect_uri => $.redirect-uri,
         grant_type => 'authorization_code';
-    my $req = self!generate-access-token-request(%payload);
-    my $ssl = IO::Socket::SSL.new(:host<www.googleapis.com>, :port<443>);
-    $ssl.print($req) or return;
-    my $content;
-    while (my $read = $ssl.recv) {
-        $content ~= $read;
-        last if $read ~~ /\r\n0\r\n\r\n$/;
-    }
-    return self!parse-response($content,$ssl.encoding);
+    my $ua = HTTP::UserAgent.new;
+    my $res = $ua.post("https://www.googleapis.com/oauth2/v4/token", %payload);
+    $res.is-success or return { error => $res.status-line };
+    return from-json($res.content);
 }
 

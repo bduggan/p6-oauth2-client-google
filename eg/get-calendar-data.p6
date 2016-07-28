@@ -60,7 +60,7 @@ say "Got code $code";
 
 # Convert to a token.
 my $access = $oauth.code-to-token(:$code);
-my $token = $access<access_token> or die "could not get access token";
+my $token = $access<access_token> or die "could not get access token : { $access.gist } ";
 say "Got access token $token";
 
 # Use it!
