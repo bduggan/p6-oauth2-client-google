@@ -6,7 +6,7 @@ use JSON::Fast;
 # https://developers.google.com/identity/protocols/OAuth2WebServer
 
 has $.config;
-has $.redirect-uri is required;
+has Str:D $.redirect-uri is required;
 has $.response-type = 'code';
 has $.prompt = 'consent'; #| or none or select_account or "consent select_account";
 has $.include-granted-scopes = 'true';
