@@ -16,7 +16,7 @@ Quick How-to
 
 4. In your application, create an oauth2 object like this:
 
-```
+```perl6
  my $oauth = OAuth2::Client::Google.new(
     config => from-json('./client_id.json'.IO.slurp),
     redirect-uri => 'http://localhost:3334/oauth',
@@ -29,7 +29,7 @@ from <https://developers.google.com/identity/protocols/googlescopes>.
 
 To authenticate, redirect the user to
 
-```
+```perl6
 $oauth.auth-uri
 ```
 
@@ -37,7 +37,7 @@ Then when they come back and send a request to '/oauth', grab
 the "code" parameter from the query string.  Use it to
 call
 
-```
+```perl6
 my $token = $oauth.code-to-token(code => $code)
 ```
 
@@ -47,7 +47,7 @@ then use with google APIs.
 If you also included "email" in the scope, you will get id-token,
 which you can use like this:
 
-```
+```perl6
 my $identity = $oauth.verify-id(id-token => $token<id_token>)
 ```
 which has, e.g. `$identity<email>` and `$identity<given_name>`.
