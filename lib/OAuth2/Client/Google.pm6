@@ -94,3 +94,24 @@ method verify-id(Str:D :$id-token!) {
     return { error => "client id mismatch" } unless $got<aud> eq self!client-id;
     return $got;
 }
+
+method save() {
+    return to-json {
+        :$!config,
+        :$!redirect-uri,
+        :$!response-type,
+        :$!prompt,
+        :$!include-granted-scopes,
+        :$!scope,
+        :$!state,
+        :$!login-hint,
+        :$!access-type
+    }
+}
+
+multi method load(IO::Path $jfile) {
+    nextwith($jfile.slurp);
+}
+multi method load(Str $json) {
+    self.bless( |from-json($json) );
+}
