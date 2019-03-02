@@ -11,17 +11,19 @@ my $browser = %*ENV<BROWSER> || qx{which xdg-open} || qx{which x-www-browser} ||
 $browser .= chomp;
 
 # Use a localhost URL from the config file.
+my $type = 'web'; # or it could be 'installed' depending on your credentials
 'client_id.json'.IO.e or die "No client_id.json";
 my $config = from-json('client_id.json'.IO.slurp);
-my $uri = $config<web><redirect_uris>.first({ /localhost/ }) or
-  die "no localhost in redirect_uris: add one and updated client_id.json";
-$uri ~~ / 'http://localhost:' $<port>=(<[0..9]>+)? $<path>=('/' \N+)? $ / or die "couldn't parse $uri";
+my $uri = $config{$type}<redirect_uris>.first({ /localhost/ }) or
+  die "no localhost in redirect_uris: add one and update client_id.json";
+$uri ~~ / 'http://localhost' $<port>=[':'(<[0..9]>+)]? $<path>=('/' \N+)? $ / or die "couldn't parse $uri";
 my $port = $<port> // 80;
 my $path = $<path> // '/';
 say "using $uri from config file";
 
 # Set things up
 my $oauth = OAuth2::Client::Google.new(
+    type => 'web',
     config => $config,
     redirect-uri => $uri,
     scope => "https://www.googleapis.com/auth/calendar.readonly email",
