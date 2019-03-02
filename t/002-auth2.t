@@ -20,6 +20,7 @@ my $sample-config =
 }
 
 my $o = OAuth2::Client::Google.new(
+    type => 'web',
     config => $sample-config,
     redirect-uri => 'http://example.com/here',
     scope => 'email',

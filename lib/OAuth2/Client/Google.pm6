@@ -5,6 +5,7 @@ use JSON::Fast;
 # Reference:
 # https://developers.google.com/identity/protocols/OAuth2WebServer
 
+has $.type is required; # 'web' or 'installed'
 has $.config;
 has Str:D $.redirect-uri is required;
 has $.response-type = 'code';
@@ -15,22 +16,24 @@ has $.state = "";
 has $.login-hint = "";
 has $.access-type = ""; # online offline
 
-method !client-id { $.config<web><client_id> }
-method !client-secret { $.config<web><client_secret> }
+#method !client-id { $.config<web><client_id> }
+#method !client-secret { $.config<web><client_secret> }
+method !client-id { $.config{self.type}<client_id> }
+method !client-secret { $.config{self.type}<client_secret> }
 
 method auth-uri {
-    my $web-config = $.config<web>;
+    my $web-config = $.config{self.type};
     die "missing client_id" unless $web-config<client_id>;
     return $web-config<auth_uri> ~ '?' ~
-     ( response_type          => $.response-type,
-        client_id              => self!client-id,
-        redirect_uri           => $.redirect-uri,
-        scope                  => $.scope,
-        state                  => $.state,
-        access_type            => $.access-type,
-        prompt                 => $.prompt,
-        login_hint             => $.login-hint,
-        include_granted_scopes => $.include-granted-scopes,
+     (response_type          => $.response-type,
+      client_id              => self!client-id,
+      redirect_uri           => $.redirect-uri,
+      scope                  => $.scope,
+      state                  => $.state,
+      access_type            => $.access-type,
+      prompt                 => $.prompt,
+      login_hint             => $.login-hint,
+      include_granted_scopes => $.include-granted-scopes,
      ).sort.map({ "{.key}={.value}" }).join('&');
 }
 
