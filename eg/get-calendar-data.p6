@@ -16,7 +16,7 @@ my $type = 'web'; # or it could be 'installed' depending on your credentials
 my $config = from-json('client_id.json'.IO.slurp);
 my $uri = $config{$type}<redirect_uris>.first({ /localhost/ }) or
   die "no localhost in redirect_uris: add one and update client_id.json";
-$uri ~~ / 'http://localhost' $<port>=[':'(<[0..9]>+)]? $<path>=('/' \N+)? $ / or die "couldn't parse $uri";
+$uri ~~ / 'http://localhost:' $<port>=[(<[0..9]>+)]? $<path>=('/' \N+)? $ / or die "couldn't parse $uri";
 my $port = $<port> // 80;
 my $path = $<path> // '/';
 say "using $uri from config file";
