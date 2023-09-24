@@ -1,6 +1,6 @@
 #!/usr/bin/env perl6
 
-use lib 'lib';
+use lib '../lib';
 
 use OAuth2::Client::Google;
 use JSON::Fast;
@@ -16,7 +16,7 @@ my $type = 'web'; # or it could be 'installed' depending on your credentials
 my $config = from-json('client_id.json'.IO.slurp);
 my $uri = $config{$type}<redirect_uris>.first({ /localhost/ }) or
   die "no localhost in redirect_uris: add one and update client_id.json";
-$uri ~~ / 'http://localhost' $<port>=[':'(<[0..9]>+)]? $<path>=('/' \N+)? $ / or die "couldn't parse $uri";
+$uri ~~ / 'http://localhost:' $<port>=[(<[0..9]>+)]? $<path>=('/' \N+)? $ / or die "couldn't parse $uri";
 my $port = $<port> // 80;
 my $path = $<path> // '/';
 say "using $uri from config file";
@@ -66,7 +66,7 @@ my $token = $access<access_token> or die "could not get access token : { $access
 say "Got access token $token";
 
 # Get identity.
-my $identity = $oauth.verify-id(id-token => $access<id_token>);
+my $identity = $oauth.verify-id(id-token => $access<access_token>);
 say $identity.gist;
 
 # Get calendar data.
