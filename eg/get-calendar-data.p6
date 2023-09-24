@@ -66,7 +66,7 @@ my $token = $access<access_token> or die "could not get access token : { $access
 say "Got access token $token";
 
 # Get identity.
-my $identity = $oauth.verify-id(id-token => $access<id_token>);
+my $identity = $oauth.verify-id(id-token => $access<access_token>);
 say $identity.gist;
 
 # Get calendar data.
