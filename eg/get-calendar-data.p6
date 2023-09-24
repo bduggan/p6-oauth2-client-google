@@ -1,6 +1,6 @@
 #!/usr/bin/env perl6
 
-use lib 'lib';
+use lib '../lib';
 
 use OAuth2::Client::Google;
 use JSON::Fast;
